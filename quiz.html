@@ -8,7 +8,7 @@
             font-family: Arial, sans-serif; 
             margin: 20px; 
             font-size: 18px; 
-            zoom: 1.0;  /* zoom level for laptops/desktops */
+            zoom: 1.0;  
         }
 
         h2 {
@@ -32,6 +32,15 @@
             font-size: 20px;
         }
 
+        input[type="text"] {
+            font-size: 18px;
+            padding: 8px;
+            width: 100%;
+            max-width: 300px;
+            margin: 10px auto;
+            display: block;
+        }
+
         #result { 
             font-size: 22px; 
             margin-top: 30px; 
@@ -48,12 +57,12 @@
             max-width: 250px;
         }
 
-        /* Mobile responsive */
         @media only screen and (max-width: 600px) {
             body { margin: 10px; font-size: 20px; }
             h2 { font-size: 28px; }
             .question { font-size: 20px; margin-bottom: 20px; }
             label { font-size: 20px; margin: 12px 0; }
+            input[type="text"] { font-size: 20px; }
             #result { font-size: 24px; }
             #start-btn, button { padding: 15px 20px; font-size: 20px; max-width: 100%; }
         }
@@ -64,7 +73,12 @@
 <h2>Global Business Services Showcase Quiz</h2>
 <div id="quiz-container"></div>
 <div id="result"></div>
+
+<input type="text" id="user-name" placeholder="Enter your name">
 <button id="start-btn">Start Quiz</button>
+
+
+
 
 
 
@@ -205,7 +219,7 @@ const section5 = [
 
 
 
-// ===== Utility: Shuffle an array =====
+// ===== Shuffle Utility =====
 function shuffle(array) {
     for (let i = array.length -1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i+1));
@@ -214,7 +228,7 @@ function shuffle(array) {
     return array;
 }
 
-// ===== Step 2: Pick random question from each section =====
+// ===== Pick Random Question =====
 function pickRandomQuestion(section) {
     const index = Math.floor(Math.random() * section.length);
     const q = JSON.parse(JSON.stringify(section[index]));
@@ -224,24 +238,32 @@ function pickRandomQuestion(section) {
     return q;
 }
 
-// ===== Step 3: Initialize variables =====
+// ===== Variables =====
 let selectedQuestions = [];
 let currentIndex = 0;
 let score = 0;
+let userName = "";
 
-// ===== Step 4: Show one question at a time =====
+// ===== Show Question =====
 function showNextQuestion() {
     const container = document.getElementById("quiz-container");
     container.innerHTML = "";
     document.getElementById("result").innerHTML = "";
 
     if (currentIndex >= selectedQuestions.length) {
-        document.getElementById("result").innerHTML = 
-            `Quiz Completed! Your total score: ${score}/${selectedQuestions.length}`;
+        const resultText = `Quiz Completed! ${userName}, your total score: ${score}/${selectedQuestions.length}`;
+        document.getElementById("result").innerHTML = resultText;
 
-        const startBtn = document.getElementById("start-btn");
-        startBtn.innerText = "Start New Quiz";
-        startBtn.style.display = "block";
+        // Submit to Google Sheet
+        submitToSheet(userName, score);
+
+        // Show only "End Quiz" button
+        const endBtn = document.createElement("button");
+        endBtn.innerText = "End Quiz";
+        endBtn.onclick = () => {
+            endBtn.disabled = true;
+        };
+        container.appendChild(endBtn);
         return;
     }
 
@@ -250,10 +272,9 @@ function showNextQuestion() {
     qDiv.className = "question";
     qDiv.innerHTML = `<b>Q${currentIndex+1}:</b> ${qObj.q}<br><br>`;
 
-    // --- Render options with spacing ---
     qObj.options.forEach((opt, i) => {
         const optionWrapper = document.createElement("div");
-        optionWrapper.style.marginBottom = "20px";  // space between options
+        optionWrapper.style.marginBottom = "20px";
 
         const radio = document.createElement("input");
         radio.type = "radio";
@@ -292,8 +313,32 @@ function showNextQuestion() {
     container.appendChild(nextBtn);
 }
 
-// ===== Step 5: Start Quiz =====
+// ===== Submit to Google Sheet =====
+function submitToSheet(name, score) {
+    fetch("https://script.google.com/macros/s/AKfycby3LCERZCghArw8Sm9FDU-oeI8EHU8LB5Ro66VmdCHjlq8NqbZWz16ESJzF1DVwhg/exec", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: name, score: score })
+    })
+    .then(res => res.json())
+    .then(data => console.log("Score submitted:", data))
+    .catch(err => console.error("Error submitting score:", err));
+}
+
+// ===== Start Quiz =====
 document.getElementById("start-btn").onclick = () => {
+    if (!userName) { // only ask name first time
+        const nameInput = document.getElementById("user-name");
+        userName = nameInput.value.trim();
+        if (!userName) {
+            alert("Please enter your name to start the quiz!");
+            return;
+        }
+        nameInput.style.display = "none"; // hide input
+    }
+
+    document.getElementById("start-btn").style.display = "none";
+
     selectedQuestions = [
         pickRandomQuestion(section1),
         pickRandomQuestion(section2),
@@ -303,12 +348,10 @@ document.getElementById("start-btn").onclick = () => {
     ];
     currentIndex = 0;
     score = 0;
-    document.getElementById("start-btn").style.display = "none"; // hide during quiz
+
     showNextQuestion();
 };
 </script>
 
 </body>
 </html>
-
-
