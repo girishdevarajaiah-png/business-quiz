@@ -28,14 +28,8 @@
         }
 
         label {
-            display: block;              /* one option per line */
-            margin: 100px 0;              /* space between A, B, C, D */
-            font-size: 20px;
             cursor: pointer;
-        }
-
-        label input {
-            margin-right: 12px;          /* space between circle and text */
+            font-size: 20px;
         }
 
         #result { 
@@ -71,6 +65,9 @@
 <div id="quiz-container"></div>
 <div id="result"></div>
 <button id="start-btn">Start Quiz</button>
+
+
+
 
 <script>
 // ===== Step 1: Questions by Section =====
@@ -204,6 +201,10 @@ const section5 = [
 {q: "Who is the Senior Director of Business Operations?", options: ["Christina Brown","Susan Mullane","Joseph Flanagan","Hema Chugh"], answer: "B"}
 ];
 
+
+
+
+
 // ===== Utility: Shuffle an array =====
 function shuffle(array) {
     for (let i = array.length -1; i > 0; i--) {
@@ -217,16 +218,9 @@ function shuffle(array) {
 function pickRandomQuestion(section) {
     const index = Math.floor(Math.random() * section.length);
     const q = JSON.parse(JSON.stringify(section[index]));
-
-    // Store correct answer text before shuffle
     const correctAnswerText = q.options[["A","B","C","D"].indexOf(q.answer)];
-
-    // Shuffle options
     q.options = shuffle(q.options);
-
-    // Update answer letter to match shuffled options
     q.correctAnswer = q.options[q.options.indexOf(correctAnswerText)];
-
     return q;
 }
 
@@ -245,7 +239,6 @@ function showNextQuestion() {
         document.getElementById("result").innerHTML = 
             `Quiz Completed! Your total score: ${score}/${selectedQuestions.length}`;
 
-        // Show start button again as "Start New Quiz"
         const startBtn = document.getElementById("start-btn");
         startBtn.innerText = "Start New Quiz";
         startBtn.style.display = "block";
@@ -255,16 +248,25 @@ function showNextQuestion() {
     const qObj = selectedQuestions[currentIndex];
     const qDiv = document.createElement("div");
     qDiv.className = "question";
-    qDiv.innerHTML = `<b>Q${currentIndex+1}:</b> ${qObj.q}<br>`;
+    qDiv.innerHTML = `<b>Q${currentIndex+1}:</b> ${qObj.q}<br><br>`;
 
-    qObj.options.forEach((opt,i) => {
+    // --- Render options with spacing ---
+    qObj.options.forEach((opt, i) => {
+        const optionWrapper = document.createElement("div");
+        optionWrapper.style.marginBottom = "20px";  // space between options
+
         const radio = document.createElement("input");
         radio.type = "radio";
         radio.name = "q";
         radio.value = opt;
-        radio.className = "option";
-        qDiv.appendChild(radio);
-        qDiv.innerHTML += ` ${String.fromCharCode(65+i)}: ${opt}<br>`;
+
+        const label = document.createElement("label");
+        label.style.marginLeft = "8px";
+        label.textContent = `${String.fromCharCode(65+i)}: ${opt}`;
+
+        optionWrapper.appendChild(radio);
+        optionWrapper.appendChild(label);
+        qDiv.appendChild(optionWrapper);
     });
 
     const nextBtn = document.createElement("button");
