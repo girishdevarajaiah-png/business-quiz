@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Business Showcase Quiz</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        .question { margin-bottom: 20px; }
+        .option { margin-left: 20px; }
+        #result { font-size: 20px; margin-top: 30px; }
+        #start-btn { margin-top: 20px; }
+        button { padding: 10px 20px; font-size: 16px; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+<h2>Business Showcase Quiz</h2>
+<div id="quiz-container"></div>
+<div id="result"></div>
+<button id="start-btn">Start Quiz</button>
+
+<script>
+// ===== Step 1: Questions by Section =====
+const section1 = [
+    {q: "Which region does Belgium belong to in the global footprint?", options: ["LA","EMEA","APJ","NA"], answer: "B"},
+{q: "Which region includes India?", options: ["LA","APJ","EMEA","NA"], answer: "B"},
+{q: "Which region includes Panama?", options: ["LA","APJ","EMEA","NA"], answer: "A"},
+{q: "Which region has the most countries listed in the Global Footprint sheet?", options: ["APJ","EMEA","NA","LA"], answer: "A"},
+{q: "How many countries are listed under the APJ region?", options: ["10","5","15","8"], answer: "D"},
+{q: "Which region has the highest number of employees?", options: ["APJ","EMEA","NA","LA"], answer: "A"},
+{q: "Which country has the most employees?", options: ["United States","Morocco","China","India"], answer: "D"},
+{q: "Who is the L4 Leader for Global Business Services", options: ["Peter Lacoste","Erica Lambert","Bill Cherella","Christina Crowley"], answer: "D"},
+{q: "What does SPS stands for?", options: ["Stratergic Product Support","Services Partner Support","Services Performance Support","Services Partner solutions"], answer: "B"},
+{q: "What does OaaS stand for?", options: ["Operations as a Service","Onboarding as a Service","Optimization as a Service","Outreach as a Service"], answer: "B"},
+{q: "What does BDSS stand for?", options: ["Business Data Support Services","Business Development Support Services","Business Digital Strategy Services","Business Delivery Support Services"], answer: "A"},
+{q: "What does BA&A stand for?", options: ["Business Automation & Analytics","Business Analytics, Automation & AI","Business Analysis & AI","Business Applications & Automation"], answer: "B"},
+{q: "What does IMS stand for?", options: ["Incident Managed Services","Infrastructure Managed Services","Inventory Managed Services","Information Managed Services"], answer: "B"},
+{q: "What was the GBS participation rate in ERGs for FY26?", options: ["0.6","0.59","0.61","0.48"], answer: "C"},
+{q: "How much did GBS donate in FY26 through cause cards (in INR)?", options: ["1.8M","2.0M","3.1M","2.2M"], answer: "D"},
+{q: "How many unique participants did GBS have in ERGs?", options: ["115","128","160","105"], answer: "B"},
+{q: "How many volunteer hours did GBS contribute in FY26?", options: ["2743","2100","3000","2500"], answer: "A"},
+{q: "Which village hosted the Tree Plantation Event organized by Planet India in Q1 FY26?", options: ["Karahalli Village","Nandi Village","Hoskote Village","Doddaballapur Village"], answer: "A"},
+{q: "What was the purpose of the WIA India activity held at Dell 6?", options: ["Chess Tournament","Badge and Flashcard Making","Tree Plantation","Volunteer Orientation"], answer: "B"},
+{q: "What was the theme of the Planet ERG event held on April 23, 2025, at Dell 10?", options: ["Clay Sculpting","Seed Ball Making","Badge Designing","Tree Plantation"], answer: "B"},
+{q: "Which ERG organized the Clay Sculpting Workshop at Dell 06?", options: ["WIA India","Pride ERG","Planet ERG","GenNext ERG"], answer: "C"},
+{q: "What was the connectivity shift initiative for 13K+ partners?", options: ["RSA to HSK","VPN to Cloud","LAN to WAN","Email to Chat"], answer: "A"},
+{q: "How many vendors were transitioned globally from RSA to HSK?", options: ["6K+","13K+","20K+","541"], answer: "B"},
+{q: "Which team partnered with IT for the RSA to HSK transition?", options: ["Delivery SPS","ISG Remote Billing","OaaS","DT Managed Services"], answer: "C"},
+{q: "How many contingent onboardings were delivered with 100% TAT?", options: ["541","6K+","13K+","20K+"], answer: "B"},
+{q: "Which team achieved 100% TAT for contingent onboardings?", options: ["ISG Remote Billing","OaaS","Delivery SPS","DT Managed Services"], answer: "B"},
+{q: "Across which business units were the 6K+ contingent onboardings delivered?", options: ["ISG, CSG & Services","RDC & Consulting","APJ & EMEA","Logistics & Supply Chain"], answer: "A"},
+{q: "What does TAT stand for in the context of onboarding?", options: ["Total Audit Time","Turnaround Time","Technical Assessment Time","Time Allocation Tracker"], answer: "B"},
+{q: "Which initiative helped expand support across RDC, Consulting, ISG, Dell Learning, and APJ Intake?", options: ["Vlync Launch","Streamlined operations across SPS","Connectivity Shift","Invoice Audit"], answer: "B"},
+{q: "What was the outcome of streamlining operations across SPS?", options: ["Increased vendor count","Freed HC to expand support","Reduced onboarding time","Improved invoice accuracy"], answer: "B"},
+{q: "Which team was responsible for resolving RDC legacy issues?", options: ["OaaS","ISG Remote Billing","Delivery Services Partner Support","DT Managed Services"], answer: "C"},
+{q: "What does HSK refer to in the connectivity shift?", options: ["A secure onboarding tool","A new vendor portal","A secure authentication method","A billing dashboard"], answer: "C"}
+
+];
+
+const section2 = [
+    {q: "Who is the Serivce line Manager for Sales Motion ?", options: ["Shruthi Sudhindra","Bill Cherella","Susan Mullane","Lou Mabley"], answer: "A"},
+{q: "What team supports custom services bookings globally?", options: ["IMS","Services Credits","Bookings","T&M"], answer: "C"},
+{q: "Who is the customer for IMS custom bookings?", options: ["Bill Scannell","Bill Cherella","Lou Mabley","Alan Collins"], answer: "B"},
+{q: "What order type is used by IMS custom bookings team?", options: ["GTMO","PS Utility","T&M","AI BOT"], answer: "B"},
+{q: "Which team manages Services Credits?", options: ["IMS","Bookings","Services Credits","Recertification"], answer: "C"},
+{q: "Who are the customers for Services Credits?", options: ["Bill Cherella and Bill Scannell","Lou Mabley and Alan Collins","Shruthi Sudhindra and Paula Levy","Karen Cunliffe and Niladri Basu"], answer: "A"},
+{q: "What is the focus of the T&M team?", options: ["Recertification","Winback Campaigns","Strategic direction and billing","AI automation"], answer: "C"},
+{q: "Who are the customers for T&M services?", options: ["ISG and CSG","ESG and Renewal Sales","DTS Sales EMEA","NA Services Sales"], answer: "B"},
+{q: "How much was booked in Custom Bookings (GTMO)?", options: ["$232M","$804M","$5.3M","$17.7M"], answer: "B"},
+{q: "How much was booked in IMS (GTMO)?", options: ["$804M","$5.3M","$232M","$40M"], answer: "C"},
+{q: "How much was redeemed in Consulting/Services Credits globally in Q2?", options: ["$32M","$17.7M","$40M","$804M"], answer: "C"},
+{q: "How much Services Credits were redeemed for X.AI within 4 days?", options: ["$40M","$32M","$17.7M","$5.3M"], answer: "B"},
+{q: "How much was booked in Time & Materials (T&M)?", options: ["$5.3M","$804M","$232M","$40M"], answer: "A"},
+{q: "How much was booked through Winback Campaigns (T&M)?", options: ["$32M","$17.7M","$5.3M","$804M"], answer: "B"},
+{q: "How many assets were recertified under T&M?", options: ["500+","650+","1000+","250+"], answer: "B"},
+{q: "What is the goal of the AI BOT in T&M Billing Modernization?", options: ["Automate recertification","Summarize cases","Automate quoting process","Centralize intake"], answer: "C"},
+{q: "What is the purpose of the Automated Win Back project?", options: ["Increase billing","Unlock full win back revenue potential","Improve customer feedback","Reduce manual effort"], answer: "B"},
+{q: "What does the Recertification AI Project aim to do?", options: ["Automate quoting","Summarize recert & related cases","Launch intake tool","Modernize billing"], answer: "B"},
+{q: "What is the GTMO Intake tool designed to replace?", options: ["Manual billing","Email-based intake","Chat support","Winback campaigns"], answer: "B"}
+];
+
+const section3 = [
+    {q: "What is the primary role of the BDSS team?", options: ["Marketing automation","Financial analysis","Frontline support for FinancialForce-related ServiceNow tickets","Sales enablement"], answer: "C"},
+{q: "Which team focuses on automation and AI-driven solutions?", options: ["BDSS","BA&A","GCC","GISE"], answer: "B"},
+{q: "Who is the service line Manager for BDSS and BA&A?", options: ["Christina Crowley","Christopher Quirk","Clare Ricketts","Peter Lacoste"], answer: "C"},
+{q: "BDSS provides frontline support for which system?", options: ["Salesforce","ServiceNow","Workday","Oracle"], answer: "B"},
+{q: "BA&A supports which of the following teams?", options: ["HR and Finance","GCC and GISE","BDSS and GCC","GCC and BDSS"], answer: "B"},
+{q: "Who are the stakeholders supported by BDSS in Professional Services?", options: ["Financial Analysts","Project Managers and Service Delivery Engineers","GCC Analysts","Marketing Advisors"], answer: "B"},
+{q: "Which tool was developed to replace Smartsheet with SharePoint?", options: ["QBERT","Power BI","PowerApp","Vlync"], answer: "C"},
+{q: "How many servers were migrated to support web-based solutions?", options: ["2","3","4","5"], answer: "C"},
+{q: "What is the purpose of the T&M Quoting BOT?", options: ["To automate billing","To check entitlements and send estimates","To manage project timelines","To generate invoices"], answer: "B"},
+{q: "How many hours did the T&M Quoting BOT save per quarter?", options: ["1,912 hrs","2,912 hrs","3,912 hrs","4,912 hrs"], answer: "B"},
+{q: "What dashboard transformed revenue reporting?", options: ["GCC Dashboard","Recert Dashboard","RevStream Dashboard","T&M Dashboard"], answer: "C"},
+{q: "How many applications were audited in FY26 under Quirk’s org?", options: ["14","24","34","44"], answer: "B"},
+{q: "What automation project saved 1,050 hours?", options: ["Server Migration","MVS PCO Data Migration","Recertification AI","T&M Quoting BOT"], answer: "B"},
+{q: "Who are the stakeholders supported by BA&A for financial analysis?", options: ["Clare Ricketts","Christopher Kleiman","Peter Lacoste","Christina Crowley"], answer: "B"},
+{q: "What is the goal of AI use case expansion?", options: ["Reduce headcount","Scale AI across GBS","Replace manual reporting","Automate ticketing"], answer: "B"},
+{q: "What is the purpose of the BDSS Ticket Hub Dashboard?", options: ["Track consulting credits","Monitor server migration","Track BDSS activities and SLA alignment","Manage AI bots"], answer: "C"},
+{q: "Which team developed VLync?", options: ["BDSS","Sales Motion","BA&A","GCC"], answer: "C"},
+{q: "Which team collaborates with PM enablement and Change Management?", options: ["Sales Motion","Professional Services Support","Services Partner Support","BDSS & BA&A"], answer: "D"},
+{q: "How many bots were deployed in FY26 under BA&A Automation?", options: ["3","4","5","6"], answer: "C"},
+{q: "What is the projected time savings from the T&M bot under development?", options: ["1,664 hrs","2,000 hrs","2,912 hrs","3,500 hrs"], answer: "C"}
+];
+
+const section4 = [
+    {q: "Who is the service line Manager for Professional Services Support ?", options: ["Chris Quirk","Gautam Chandran","Christina Crowley","Vaibhav Sawant"], answer: "B"},
+{q: "What type of support does the Partner Support Helpdesk provide?", options: ["Technical","Financial","Program-specific","Legal"], answer: "C"},
+{q: "Who are the customers of RM Support?", options: ["IT Managers","Recovery Managers","Project Managers","Business Analysts"], answer: "C"},
+{q: "What is the CSAT score for the PSH team?", options: ["85%","90%","97%","100%"], answer: "C"},
+{q: "What team achieved an 85% success rate through automation?", options: ["IB Precheck","RM Support","PSH","ARS"], answer: "D"},
+{q: "Which team reduced ageing cases by 65%?", options: ["RM Support","IB Precheck","TCoE","ARS"], answer: "B"},
+{q: "What tool did the RM team transition to from CLICK?", options: ["Merlin","Salesforce","Power BI","Excel"], answer: "A"},
+{q: "Who are the customers of TCoE Support?", options: ["IT & Business","Partners","Distributors","PMs"], answer: "A"},
+{q: "What does IB Precheck support?", options: ["Asset Recovery","Partner Communication","Project Managers","IT Testing"], answer: "C"},
+{q: "What is the purpose of the IBP tool?", options: ["Replace Excel","Replace ICT","Replace Merlin","Replace Salesforce"], answer: "B"},
+{q: "What platform was used to automate partner communication?", options: ["Excel","Power BI","Salesforce Data Loader & Power Automate","MS Teams"], answer: "C"},
+{q: "What is the goal of transitioning Excel trackers to MS365 Lists?", options: ["Reduce cost","Improve collaboration","Increase security","Add visuals"], answer: "B"},
+{q: "What is the vision of RM Operations: Merlin Adoption?", options: ["Increase revenue","Enhance efficiency and consistency","Reduce headcount","Improve security"], answer: "B"},
+{q: "Who supports Asset Recovery Services?", options: ["Christina Crowley","Gautam Chandran","Chris Quirk","Vaibhav Sawant"], answer: "C"},
+{q: "What is the role of the PSH team?", options: ["Deliver hardware","Provide financial audits","Empower stakeholders through support and innovation","Manage legal contracts"], answer: "C"},
+{q: "What feedback did Vaibhav Sawant give about the GBS team?", options: ["Poor communication","Incredibly supportive and agile","Needs improvement","Too slow"], answer: "B"},
+{q: "What region does Tintin Arao mention in their feedback?", options: ["EMEA","SEA","APJ","NA"], answer: "B"},
+{q: "What stands out in Yaashini Selvarajah’s feedback?", options: ["Lack of coordination","Strong backend support and teamwork","Delayed responses","Poor documentation"], answer: "B"},
+{q: "What is the purpose of the Summary of Services tool (IBP)?", options: ["Share request details post prechecks","Automate billing","Track assets","Manage escalations"], answer: "A"},
+{q: "What is the modernization initiative mentioned for OOW Win Back?", options: ["Use Excel","Use Myra","Use Merlin","Use Salesforce"], answer: "B"},
+{q: "Which team achieved an 85% success rate through automation?", options: ["IB Precheck Team","ARS Team","PSH Team","Resource Management Team"], answer: "B"},
+{q: "Which team reduced ageing cases by 65%?", options: ["ARS Team","PSH Team","IB Precheck Team","Resource Management Team"], answer: "C"},
+{q: "Which team successfully completed an ISO audit?", options: ["ARS Team","IB Precheck Team","PSH Team","Delivery SPS"], answer: "B"},
+{q: "Which team transitioned from CLICK to FinancialForce?", options: ["IB Precheck Team","ARS Team","Resource Management Team","PSH Team"], answer: "C"},
+{q: "When did Merlin go live for the Resource Management Team?", options: ["January 24th","February 24th","March 24th","April 24th"], answer: "C"}
+];
+
+const section5 = [
+    {q: "Who is the Service Line manager for SPS?", options: ["Chris Quirk","Dana Sheridan","Alex Barretto","Kevin Whitlow"], answer: "B"},
+{q: "What does SPS Delivery manage?", options: ["Partner onboarding","PO lifecycle","Vendor audits","Field repairs"], answer: "B"},
+{q: "Who are the customers of Delivery SPS?", options: ["IT Managers","PMs & PDMs","Finance Team","Legal Team"], answer: "B"},
+{q: "What does CSG Remote Partner Support handle?", options: ["Hardware installation","PO and billing","Software testing","Training"], answer: "B"},
+{q: "Who are the customers of CSG Remote Partner Support?", options: ["Site Leads & PMs","Legal Team","HR","Finance"], answer: "A"},
+{q: "What does ISG Remote & Field Partner Support manage?", options: ["Partner hiring","PO and billing","Training","Marketing"], answer: "B"},
+{q: "Who are the customers of ISG Remote & Field Partner Support?", options: ["PMs","Vendor Managers","HR","IT"], answer: "B"},
+{q: "What team works with Data2Logistics (D2L)?", options: ["ISG Remote Support","Services Parts Partner Support","CSG Support","DT Managed Services"], answer: "B"},
+{q: "Who are the customers of Services Parts Partner Support?", options: ["Sales","Supply Chain & Logistics","HR","IT"], answer: "B"},
+{q: "What does Global Field Services support?", options: ["Legal contracts","Remote and onsite support","Marketing campaigns","Software development"], answer: "B"},
+{q: "What is a core service of OaaS?", options: ["Partner training","Contract Account Extension","Legal review","Marketing"], answer: "B"},
+{q: "Who are the customers of OaaS?", options: ["Finance team","Business aligned to Chris Quirk & others","Legal team","HR"], answer: "B"},
+{q: "What does Time Entry as a Service manage?", options: ["Employee attendance","Project time in FinancialForce","Leave requests","Payroll"], answer: "B"},
+{q: "What does Project Administration support?", options: ["Marketing","Project Lifecycle in FinancialForce","Legal contracts","HR onboarding"], answer: "B"},
+{q: "What does DT Managed Services provide?", options: ["Legal audits","Financial booking and invoice support","Partner onboarding","Training"], answer: "B"},
+{q: "What achievement did Delivery SPS accomplish?", options: ["Cleared 541 invoices worth $1.77M","Launched new CRM","Reduced headcount","Increased revenue"], answer: "A"},
+{q: "What tool was launched globally for onboarding?", options: ["Ariba","Vlync","Salesforce","Epicenter"], answer: "B"},
+{q: "How many contingent onboardings were delivered at 100% TAT?", options: ["3K","6K","10K","13K"], answer: "B"},
+{q: "What modernization initiative uses AI for billing?", options: ["Vlync","SPS Case Mgmt","Dell Centralized Billing","Epicenter"], answer: "C"},
+{q: "Which team manages the Partner Purchase Order lifecycle for ISG Teams?", options: ["CSG Remote Partner Support","ISG Remote & Field Partner Support","Delivery SPS","DT Managed Services"], answer: "C"},
+{q: "What was the value of RDC legacy invoices cleared by Delivery Services Partner Support?", options: ["$1.5M","$1.77M","$2M","$1.25M"], answer: "B"},
+{q: "How many RDC legacy invoices were resolved?", options: ["541","750","13000","6000"], answer: "A"},
+{q: "Which team reduced manual effort by 80% through billing automation?", options: ["OaaS","Delivery SPS","ISG Remote Billing","DT Managed Services"], answer: "C"},
+{q: "What was the percentage reduction in manual effort achieved by ISG Remote Billing?", options: ["0.5","0.6","0.8","1"], answer: "C"},
+{q: "Which team centralized region-specific cheat sheets into a global portal?", options: ["ISG Remote Billing","Delivery Services Partner Support","OaaS","DT Managed Services"], answer: "B"},
+{q: "How many hours were saved annually by centralizing cheat sheets?", options: ["541","750","13000","6000"], answer: "B"},
+{q: "What is the name of the unified onboarding tool launched globally?", options: ["Ariba","Epicenter","Vlync","FinancialForce"], answer: "C"},
+{q: "How many annual users are served by the Vlync platform in FY26?", options: ["6K+","13K+","20K+","750+"], answer: "C"},
+{q: "Which team led the global launch of the Vlync onboarding tool?", options: ["ISG Remote Billing","Delivery SPS","OaaS","DT Managed Services"], answer: "C"}
+];
+
+// ===== Utility: Shuffle an array =====
+function shuffle(array) {
+    for (let i = array.length -1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i+1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+}
+
+// ===== Step 2: Pick random question from each section =====
+function pickRandomQuestion(section) {
+    const index = Math.floor(Math.random() * section.length);
+    // Clone the question object to avoid modifying original
+    const q = JSON.parse(JSON.stringify(section[index]));
+    // Shuffle options
+    q.options = shuffle(q.options);
+    return q;
+}
+
+// ===== Step 3: Initialize variables =====
+let selectedQuestions = [];
+let currentIndex = 0;
+let score = 0;
+
+// ===== Step 4: Show one question at a time =====
+function showNextQuestion() {
+    const container = document.getElementById("quiz-container");
+    container.innerHTML = "";
+    document.getElementById("result").innerHTML = "";
+
+    if (currentIndex >= selectedQuestions.length) {
+        document.getElementById("result").innerHTML = 
+            `Quiz Completed! Your total score: ${score}/${selectedQuestions.length}`;
+        return;
+    }
+
+    const qObj = selectedQuestions[currentIndex];
+    const qDiv = document.createElement("div");
+    qDiv.className = "question";
+    qDiv.innerHTML = `<b>Q${currentIndex+1}:</b> ${qObj.q}<br>`;
+
+    ["A","B","C","D"].forEach((opt,i) => {
+        if(qObj.options[i] !== undefined){
+            const radio = document.createElement("input");
+            radio.type = "radio";
+            radio.name = "q";
+            radio.value = qObj.options[i];
+            radio.className = "option";
+            qDiv.appendChild(radio);
+            qDiv.innerHTML += ` ${String.fromCharCode(65+i)}: ${qObj.options[i]}<br>`;
+        }
+    });
+
+    const nextBtn = document.createElement("button");
+    nextBtn.innerText = currentIndex === selectedQuestions.length-1 ? "Submit Quiz" : "Next";
+    nextBtn.onclick = () => {
+        const radios = document.getElementsByName("q");
+        let answered = false;
+        for (const r of radios) {
+            if (r.checked) {
+                answered = true;
+                // Compare with original correct answer letter
+                const correctOption = qObj.options[["A","B","C","D"].indexOf(qObj.answer)] || qObj.answer;
+                if (r.value === correctOption) score += 1;
+            }
+        }
+        if (!answered) {
+            alert("Please select an answer!");
+            return;
+        }
+        currentIndex++;
+        showNextQuestion();
+    };
+
+    container.appendChild(qDiv);
+    container.appendChild(nextBtn);
+}
+
+// ===== Step 5: Start Quiz =====
+document.getElementById("start-btn").onclick = () => {
+    selectedQuestions = [
+        pickRandomQuestion(section1),
+        pickRandomQuestion(section2),
+        pickRandomQuestion(section3),
+        pickRandomQuestion(section4),
+        pickRandomQuestion(section5)
+    ];
+    currentIndex = 0;
+    score = 0;
+    showNextQuestion();
+};
+</script>
+
+</body>
+</html>
